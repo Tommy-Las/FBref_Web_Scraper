@@ -2,7 +2,9 @@
 
 import pandas as pd
 import requests
-from io import StringIO  
+from io import StringIO
+
+pd.set_option('display.max_columns', None)
 
 # Names of columns for later renaming 
 standard_new_names = {"MP": "Matches Played", "PrgC": "Progressive Carries", "PrgP": "Progressive Passes", "PrgR":"Progressive Passes Received",
@@ -10,10 +12,10 @@ standard_new_names = {"MP": "Matches Played", "PrgC": "Progressive Carries", "Pr
 }
 passing_new_names = {
     'Cmp': 'Total Passes Completed',
-       'Att': 'Total Passes Attempted', 'Cmp%.1':'Total Passes Success %', 'TotDist': 'Total Passing Distance', 'PrgDist': 'Progressive Passing Distance', 'Cmp.1': 'Short Passes Completed',
+       'Att': 'Total Passes Attempted', 'Cmp%':'Total Passes Success %', 'TotDist': 'Total Passing Distance', 'PrgDist': 'Progressive Passing Distance', 'Cmp.1': 'Short Passes Completed',
        'Att.1': 'Short Passes Attenpted', 'Cmp%.1': 'Short Passes Success %',
        'Cmp.2': 'Medium Passes Completed', 'Att.2': 'Medium Passes Attempted', 'Cmp%.2': 'Medium Passes Success %', 'Cmp.3': 'Long Passes Completed', 'Att.3': 'Long Passes Attempted', 'Cmp%.3': 'Long Passes Success %',
-       'KP': 'Key Passes', '1/3': 'Passes into Final Third', 'PPA': 'Passes into Penalty Area', 'CrsPA': 'Passes into Penalty Area', 'PrgP': "Progressive Passes"
+       'KP': 'Key Passes', '1/3': 'Passes into Final Third', 'PPA': 'Passes into Penalty Area', 'CrsPA': 'Crosses into Penalty Area', 'PrgP': "Progressive Passes"
 }
 passtypes_new_names = {
     'Att': 'Total Passes Attempted',
@@ -29,6 +31,14 @@ defending_new_names = {
 # Function to scrape url and return the dataframe
 
 def players_table_scraper(url):
+    """Given a FBref URL, scrape the data and return a pandas dataframe 
+
+    Args:
+        url (string): URL of the FBref website we want to scrape
+
+    Returns:
+        pd.DataFrame: Dataframe of the data scraped
+    """
     #Get the HTML using a GET Request, we replace the <-- and --> to read the 3rd table (players), the one we need 
     response = StringIO(requests.get(url).text.replace('<!--', '').replace('-->', ''))
     
@@ -39,10 +49,14 @@ def players_table_scraper(url):
 
 # Function to rename column names
 def column_rename(data, new_names):
-    data.rename(new_names, inplace = True, axis=1)
+    """rename columns from given dataset using a dictionary with the column names and its new names
+
+    Args:
+        data (pd.DataFrame): DataFrame that its columns are being renamed
+        new_names (dict): dictionary where the keys are the current columns of the dataframe, and the values are the new names
+    """
     
-    print('\nNew Columns Names\n')
-    print(data.columns)
+    data.rename(new_names, inplace = True, axis=1)
 
 
 #Get data from four different pages
@@ -54,18 +68,19 @@ defending = players_table_scraper('https://fbref.com/en/comps/905/defense/Copa-d
 #Preprocessing of data
 
 #Column renaming
-
 column_rename(standard, standard_new_names)
 column_rename(passing, passing_new_names)
 column_rename(passtypes, passtypes_new_names)
 column_rename(defending, defending_new_names)
 
-#join dataframes together, we want to join the columns that do not share with other tables
 
-#print(standard.head())
-#print(passing.head())
-# print(passtypes.head())
-# print(defending.head())
+# we want to join dataframes, we concatenate excluding the duplicate columns
+all_data = pd.concat([standard, passing[passing.columns.difference(standard.columns)]], axis=1)
+all_data = pd.concat([all_data, passtypes[passtypes.columns.difference(all_data.columns)]], axis=1)
+all_data = pd.concat([all_data, defending[defending.columns.difference(all_data.columns)]], axis=1)
+
+all_data.info()
+
 
 
 
