@@ -25,7 +25,7 @@ passtypes_new_names = {
 }
 defending_new_names = {
     'Tkl': 'Tackles',
-       'TklW': 'Tackles', 'Def 3rd': 'Tackles Def 3rd', 'Mid 3rd': 'Tackles Mid 3rd', 'Att 3rd':'Tackles Att 3rd', 'Tkl.1': 'Dribblers Tackled', 'Att': 'Dribbles Challenged', 'Tkl%': '% Dribblers Tackled',
+       'TklW': 'Tackles Won', 'Def 3rd': 'Tackles Def 3rd', 'Mid 3rd': 'Tackles Mid 3rd', 'Att 3rd':'Tackles Att 3rd', 'Tkl.1': 'Dribblers Tackled', 'Att': 'Dribbles Challenged', 'Tkl%': '% Dribblers Tackled',
        'Lost': 'Challenges Lost', 'Blocks':'Total Blocks','Sh': 'Shots Blocked', 'Pass':'Passes Blocked', 'Int':'Interceptions', 'Tkl+Int':'Tackles+Interceptions', 'Clr':'Clearances', 'Err':'Defensive Errors'
 }
 # Function to scrape url and return the dataframe
