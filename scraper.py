@@ -81,7 +81,7 @@ all_data = pd.concat([all_data, defending[defending.columns.difference(all_data.
 
 all_data.info()
 
-all_data.to_csv("FBRef_2024_CopaDeLaLiga_MidfieldersAnalysis")
+all_data.to_csv("FBRef_2024_CopaDeLaLiga_MidfieldersAnalysis.csv", sep=',', encoding='UTF-8')
 
 
     
